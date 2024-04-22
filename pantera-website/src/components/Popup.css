@@ -1,0 +1,29 @@
+.modal-background {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgb(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+
+.modal-style {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  border-radius: 44px 44px 44px 44px;
+  -webkit-border-radius: 44px 44px 44px 44px;
+  -moz-border-radius: 44px 44px 44px 44px;
+  width: 300px;
+  height: 300px;
+  background-color: red;
+}
+
+.modal-container {
+  margin: 0 auto;
+}
