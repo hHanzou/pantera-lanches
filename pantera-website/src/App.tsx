@@ -28,6 +28,30 @@ function App() {
     });
   };
 
+  const totalPrice = () => {
+    let total = 0;
+    orders.map((item) => {
+      total += parseFloat(item.price.split(" ")[1].replace(",", "."));
+      total += item.priceAdd ? item.priceAdd : 0;
+    });
+    return total;
+  };
+
+  const formatAddToCart = (str: string) => {
+    str = str.slice(0, -1);
+    console.log(str);
+    return "(" + str + ")";
+  };
+
+  const priceAndAddSum = (p: string, a: number) => {
+    let price = parseFloat(p.split(" ")[1]);
+    console.log("MACARENAAAAA " + price);
+    return (price + a).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
   // function removeOrder(index: number) {
   //   const copyOrders = orders;
   //   copyOrders.splice(index, 1);
@@ -51,34 +75,61 @@ function App() {
             ></MenuForm>
           </section>
           <aside>
-            <h2>Carrinho:</h2>
-            {orders.map((item, index) => (
-              <div className="cart-list" key={index}>
-                <h1>{item.name}</h1>
-                <div
-                  onClick={() => {
-                    removeOrder(index);
-                  }}
-                >
-                  X
+            <div>
+              <div className="cart-title">Carrinho:</div>
+              <div className="cart-list">
+                {orders.map((item, index) => (
+                  <div className="cart-item" key={index}>
+                    <div>
+                      <div className="cart-row">
+                        <div className="item-part">{item.name}</div>
+                        <div className="cart-item-price">
+                          {item.priceAdd
+                            ? priceAndAddSum(item.price, item.priceAdd)
+                            : item.price}
+                        </div>
+                      </div>
+                      <div className="item-part item-adds">
+                        {item.add ? formatAddToCart(item.add) : "..."}
+                      </div>
+                    </div>
+                    <div
+                      className="remove grid-item"
+                      onClick={() => {
+                        removeOrder(index);
+                      }}
+                    >
+                      X
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="cart-bottom">
+              <div className="total-div">
+                <div className="cart-total">Total:</div>
+                <div className="cart-price">
+                  {totalPrice().toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </div>
               </div>
-            ))}
+              <div className="button-div">
+                <button
+                  className="confirm-order"
+                  onClick={() => {
+                    setShowPopup2(true);
+                  }}
+                >
+                  Confirmar Pedido
+                </button>
+              </div>
+            </div>
           </aside>
-        </div>
-        <div className="pre-footer">
-          <button
-            className="confirm-order"
-            onClick={() => {
-              setShowPopup2(true);
-            }}
-          >
-            Confirmar Pedido
-          </button>
         </div>
         <footer>FOOOOTER</footer>
       </main>
-
       <Popup
         showPopup={showPopup}
         setShowPopup={setShowPopup}

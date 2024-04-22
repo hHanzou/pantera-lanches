@@ -131,18 +131,11 @@ export const MenuForm: React.FC<MenuFormProps> = ({
           {item.type !== "Add" && (
             <div
               key={item.id}
-              onClick={() =>
-                // pushOrder({
-                //   name: item.name,
-                //   description: item.description,
-                //   type: item.type,
-                //   // quantity: inputValue(item.id.toString()),
-                // })
-                {
-                  setPopupContent(item);
-                  setShowPopup(true);
-                }
-              }
+              className="item-div"
+              onClick={() => {
+                setPopupContent(item);
+                setShowPopup(true);
+              }}
             >
               <span className="item-name">{item.name + " "}</span>
               <span className="item-price"> {item.price}</span>
