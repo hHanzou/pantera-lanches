@@ -1,6 +1,5 @@
 import "./ConfirmPopup.css";
 import { order } from "../App";
-import { menu } from "../data/menu";
 
 type PopupType2 = {
   showPopup2: boolean;
@@ -13,6 +12,10 @@ export const ConfirmPopup: React.FC<PopupType2> = ({
   setShowPopup2,
   orders,
 }) => {
+  const formatAddToCart = (str: string) => {
+    str = str.slice(0, -1);
+    return "(" + str + ")";
+  };
   const totalPrice = () => {
     let total = 0;
     orders.map((item) => {
@@ -21,47 +24,63 @@ export const ConfirmPopup: React.FC<PopupType2> = ({
     });
     return total;
   };
-  const addStr = (str: string) => {
-    let newStr = "";
-    const strArr = str.split(",").filter((str) => str.length > 0);
-    for (let i = 0; i < strArr.length; i++) {
-      newStr += strArr[i];
-      if (i !== strArr.length - 1) {
-        newStr += " - ";
+
+  const formatToMessage = () => {
+    // e.add ? text += `(${e.add})\r\n` : null;
+    let text = "";
+    orders.map((e) => {
+      text += `${e.name} `;
+      if (e.add) {
+        let temp = e.add.slice(0, -1);
+        text += `(${temp})\r\n`;
+      } else {
+        text += "\r\n";
       }
-    }
-    return newStr;
+    });
+    console.log(text);
+    const url_text = encodeURIComponent(text);
+    const whats = `https://api.whatsapp.com/send?phone=554197804023&text=${url_text}`;
+    window.location.href = whats;
+    console.log(whats);
   };
+
   if (showPopup2) {
     return (
       <div className="modal-background2">
         <div className="modal-style2">
           <div className="modal-container2">
-            <div className="order-list"></div>
-            <div>
+            <div className="order-list">
               {orders.map((item, index) => (
-                <div className="order-list" key={index}>
-                  <h1>{item.name}</h1>
-                  <div>
-                    <h1>{item.price}</h1>
-                    {item.priceAdd !== undefined && item.priceAdd > 0 ? (
-                      <h1>
+                <div className="item-box" key={index}>
+                  <div className="name-row">
+                    <span>{item.name}</span>
+                    <span>{item.price}</span>
+                  </div>
+                  {item.priceAdd !== undefined && item.priceAdd > 0 ? (
+                    <div className="add-row">
+                      <span className="add-txt">
+                        {item.add ? formatAddToCart(item.add) : null}
+                      </span>
+                      <span>
                         {item.priceAdd.toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
-                      </h1>
-                    ) : null}
-                  </div>
-                  <h1>{item.add ? addStr(item.add) : null}</h1>
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               ))}
-              <h1>{`TOTAL: ${totalPrice().toLocaleString("pt-BR", {
+            </div>
+            <div className="price-row">
+              <h1>{`Total: ${totalPrice().toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })}`}</h1>
+            </div>
+            <div className="buttons-row">
               <button onClick={() => setShowPopup2(false)}>Cancelar</button>
-              <button>Confirmar</button>
+              <button onClick={() => formatToMessage()}>Confirmar</button>
             </div>
           </div>
         </div>

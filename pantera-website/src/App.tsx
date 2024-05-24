@@ -1,10 +1,12 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { menu } from "./data/menu";
 import { MenuForm } from "./components/menuForm";
 import { Popup } from "./components/Popup";
 import { ConfirmPopup } from "./components/ConfirmPopup";
 import PanteraLogo from "./assets/pantera-logo.png";
+import shopCart from "./assets/shopcart.svg";
+import whatsappIcon from "./assets/whatsapp.svg";
 
 export type order = {
   id?: number;
@@ -39,30 +41,49 @@ function App() {
 
   const formatAddToCart = (str: string) => {
     str = str.slice(0, -1);
-    console.log(str);
     return "(" + str + ")";
   };
 
   const priceAndAddSum = (p: string, a: number) => {
     let price = parseFloat(p.split(" ")[1]);
-    console.log("MACARENAAAAA " + price);
     return (price + a).toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
     });
   };
 
-  // function removeOrder(index: number) {
-  //   const copyOrders = orders;
-  //   copyOrders.splice(index, 1);
-  //   console.log(copyOrders);
-  //   setOrders(copyOrders);
-  // }
+  const goToWhatsapp = () => {
+    const whats = `https://api.whatsapp.com/send?phone=554197804023&text=`;
+    window.location.href = whats;
+  };
+
+  function offScroll() {
+    const body = document.querySelector("body");
+    if (body) {
+      body.style.overflow = "hidden";
+    }
+  }
+
+  function onScroll() {
+    const body = document.querySelector("body");
+    if (body) {
+      body.style.overflow = "auto";
+    }
+  }
+
+  useEffect(() => {
+    if (showPopup || showPopup2) {
+      offScroll();
+    } else {
+      onScroll();
+    }
+  }, [showPopup, showPopup2]);
   return (
     <>
       <header>
         <img src={PanteraLogo} alt="pantera-logo" />
       </header>
+      <div className="white-container"></div>
       <main>
         <div className="box-shops">
           <section>
@@ -76,7 +97,10 @@ function App() {
           </section>
           <aside>
             <div>
-              <div className="cart-title">Carrinho:</div>
+              <div className="cart-title">
+                <img src={shopCart} alt="shopcart" className="shopcart" />
+                Carrinho:
+              </div>
               <div className="cart-list">
                 {orders.map((item, index) => (
                   <div className="cart-item" key={index}>
@@ -128,7 +152,15 @@ function App() {
             </div>
           </aside>
         </div>
-        <footer>FOOOOTER</footer>
+        <footer>
+          <div className="footer-column">
+            <div className="caller">Entre em contato via whatsapp:</div>
+            <div onClick={goToWhatsapp} className="whatsapp-row">
+              <img src={whatsappIcon} alt="whatsappIcon" className="whatsapp" />
+              (41) 997XX-XXXX
+            </div>
+          </div>
+        </footer>
       </main>
       <Popup
         showPopup={showPopup}
