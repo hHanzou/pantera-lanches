@@ -53,7 +53,7 @@ function App() {
   };
 
   const goToWhatsapp = () => {
-    const whats = `https://api.whatsapp.com/send?phone=554197804023&text=`;
+    const whats = `https://api.whatsapp.com/send?phone=554791728556&text=`;
     window.location.href = whats;
   };
 
@@ -157,7 +157,7 @@ function App() {
             <div className="caller">Entre em contato via whatsapp:</div>
             <div onClick={goToWhatsapp} className="whatsapp-row">
               <img src={whatsappIcon} alt="whatsappIcon" className="whatsapp" />
-              (41) 997XX-XXXX
+              (47) 9172-8556
             </div>
           </div>
         </footer>

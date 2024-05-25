@@ -7,6 +7,10 @@ type PopupType2 = {
   orders: [] | order[];
 };
 
+type OrderWithCount = order & {
+  count: number;
+};
+
 export const ConfirmPopup: React.FC<PopupType2> = ({
   showPopup2,
   setShowPopup2,
@@ -25,23 +29,43 @@ export const ConfirmPopup: React.FC<PopupType2> = ({
     return total;
   };
 
-  const formatToMessage = () => {
-    // e.add ? text += `(${e.add})\r\n` : null;
-    let text = "";
-    orders.map((e) => {
-      text += `${e.name} `;
-      if (e.add) {
-        let temp = e.add.slice(0, -1);
-        text += `(${temp})\r\n`;
-      } else {
-        text += "\r\n";
+  const contarPedidos = (pedidos: order[]) => {
+    const contador = pedidos.reduce<{
+      [key: string]: { pedido: order; count: number };
+    }>((acc, pedido) => {
+      const key = `${pedido.name}-${pedido.add ?? ""}`; // Cria uma chave única considerando name e add
+      if (!acc[key]) {
+        acc[key] = { pedido, count: 0 };
       }
-    });
-    console.log(text);
-    const url_text = encodeURIComponent(text);
-    const whats = `https://api.whatsapp.com/send?phone=554197804023&text=${url_text}`;
-    window.location.href = whats;
-    console.log(whats);
+      acc[key].count += 1;
+      return acc;
+    }, {});
+
+    return Object.values(contador).map((item) => ({
+      ...item.pedido,
+      count: item.count,
+    }));
+  };
+
+  const formatToMessage = (list: OrderWithCount[]) => {
+    // e.add ? text += `(${e.add})\r\n` : null;
+    if (orders.length > 0) {
+      let text = "Olá, eu gostaria de fazer um pedido. \r\n";
+      list.map((e) => {
+        let adds: string = "";
+        if (e.add) {
+          adds = e.add.slice(0, -1);
+          // adds = e.add.split("").pop().toString();
+        }
+        text += `${e.count}x - ${e.name}${e.add ? ` - (${adds})` : ""}\r\n`;
+      });
+
+      const url_text = encodeURIComponent(text);
+      const whats = `https://api.whatsapp.com/send?phone=554791728556&text=${url_text}`;
+      window.location.href = whats;
+    } else {
+      alert("Coloque itens ao seu carrinho!");
+    }
   };
 
   if (showPopup2) {
@@ -80,7 +104,14 @@ export const ConfirmPopup: React.FC<PopupType2> = ({
             </div>
             <div className="buttons-row">
               <button onClick={() => setShowPopup2(false)}>Cancelar</button>
-              <button onClick={() => formatToMessage()}>Confirmar</button>
+              <button
+                onClick={() => {
+                  const pedidosComContagem = contarPedidos(orders);
+                  formatToMessage(pedidosComContagem);
+                }}
+              >
+                Confirmar
+              </button>
             </div>
           </div>
         </div>
